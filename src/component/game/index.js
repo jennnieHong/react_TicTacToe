@@ -10,11 +10,12 @@ class Game extends React.Component {
           squares: Array(9).fill(null),
         },
       ],
+      stepNumber: 0,
       xIsNext: true,
     };
   }
   handleClick(i) {
-    const history = this.state.history;
+    const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const squares = this.state.history[history.length - 1].squares.slice();
     if (calculateWinner(squares) || squares[i]) {
       return;
@@ -22,7 +23,7 @@ class Game extends React.Component {
     squares[i] = this.state.xIsNext ? "X" : "O";
     this.setState({
       history: history.concat([{ squares: squares }]),
-      stepNmber: 0,
+      stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
     });
   }
@@ -34,7 +35,8 @@ class Game extends React.Component {
   }
   render() {
     const history = this.state.history;
-    const current = history[history.length - 1];
+    // const current = history[history.length - 1];//가장 마지막
+    const current = history[this.state.stepNumber]; //선택한 단계의 위치
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
@@ -57,7 +59,8 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <Board
-            squares={this.state.history[history.length - 1].squares}
+            // squares={this.state.history[history.length - 1].squares}
+            squares={this.state.history[this.state.stepNumber].squares}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
